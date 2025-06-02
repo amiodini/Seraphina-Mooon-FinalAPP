@@ -38,7 +38,7 @@ const Page = () => {
      <section className='home-section'>
       <CompanionsList 
         title="Recently Completed Sessions"
-        description="Here are your recently completed sessions with your AI companions. You can review them or start a new session."
+        //description="Here are your recently completed sessions with your AI companions. You can review them or start a new session."
         companions={recentSessions}
         classNames="w-2/3 max-lg:w-full"
       />
