@@ -1,9 +1,37 @@
+import CompanionCard from "@/components/CompanionCard";
+import CompanionsList from "@/components/CompanionsList"
+import SearchInput from "@/components/SearchInput";
+import SubjectFilter from "@/components/SubjectFilter";
+import { getAllCompanions } from "@/lib/actions/companion.actions";
+import { getSubjectColor } from "@/lib/utils";
 
-const CompanionsLibrary = () => {
+const CompanionsLibrary = async ({searchParams}: SearchParams) => {
+  const filters = await searchParams;
+  const subject = filters.subject ? filters.subject.toString() : '';
+  const topic = filters.topic ? filters.topic.toString() : '';
+
+  const companions = await getAllCompanions({subject, topic});
+
   return (
-    <div>
-        Learning companions are AI agents that assist learners in their educational journey. They can provide personalized support, answer questions, and help with problem-solving. These companions are designed to adapt to the learner's needs and preferences, making the learning experience more engaging and effective.
-    </div>
+    <main>
+      <section className="flex justify-between gap-4 max-sm:flex-col">
+        <h1>Companion Library</h1>
+        <div className="flexx gap-4">
+          <SearchInput />
+          <SubjectFilter />
+        </div>
+      </section>
+      <section className="companions-grid">
+        {companions.map((companion) => (
+          <CompanionCard key={companion.id} 
+          {...companion}
+          color={getSubjectColor(companion.subject)} />
+        ))
+        }
+      
+      </section>
+
+    </main>
   )
 }
 
