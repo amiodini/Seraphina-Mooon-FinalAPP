@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link';
+import { createServerSearchParamsForServerPage } from 'next/dist/server/request/search-params';
 
 interface CompanionCardProps {
     id: string;   // Unique identifier for the companion
@@ -10,8 +11,11 @@ interface CompanionCardProps {
     color: string; // Color associated with the companion
 }
 
+
+
 const CompanionCard = ({id, name, subject, topic, duration, color}: 
     CompanionCardProps) => {
+        const compUrl = `/companions/${id}`;
     return (
         <article className="companion-card" style={{ backgroundColor: color }}>
         <div className="flex justify-between items-center">
@@ -30,7 +34,7 @@ const CompanionCard = ({id, name, subject, topic, duration, color}:
                 width={13} height={13} />
             <p className="text-sm"> {duration} min</p>
         </div>
-        <Link href={'/companions/${id}'} className="w-full">
+        <Link href={compUrl} className="w-full">
             <button className="btn-primary w-full justify-center">
                 Launch Lesson
             </button>
