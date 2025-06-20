@@ -11,6 +11,7 @@ import {
   UserButton,
 } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
+import FooterItems from "@/components/FooterItems";
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,6 +37,9 @@ export default function RootLayout({
             <Navbar />
             {children}
           </ClerkProvider>
+          <footer>
+            <FooterItems />
+          </footer>
         </body>
       </html>
     

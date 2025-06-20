@@ -4,19 +4,19 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import path from "path";
 
-const navItems= [
-                {label: "The Deck", href: "/"}, 
-                {label: "Gift a Reading", href: "/companions"}, 
-                {label: "My Readings", href: "/my-journey"},
-                ] 
+const footerItems= [
+                {label: "Biography", href: "/"}, 
+                {label: "Disclaimer", href: "/"},
+                {label: "Terms and conditiona", href: "/"}, 
+              ] 
 
-const NavItems = () => {
+const FooterItems = () => {
 
     const pathname = usePathname();
 
     return (
-        <nav className="flex items-center gap-4">
-        {navItems.map(({label, href}) => (
+        <nav className="navbar items-center gap2.5">
+        {footerItems.map(({label, href}) => (
             <Link 
                 key={label} 
                 href={href}
@@ -30,4 +30,4 @@ const NavItems = () => {
     )
   }
   
-  export default NavItems
+  export default FooterItems

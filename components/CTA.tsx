@@ -4,17 +4,17 @@ import Link from "next/link"
 
 const CTA = () => {
     return (
-      <section className="cta-section">
-        <div className="cta-badge">Start Learning Your Way</div>
+      <section className="cta-section w-fit">
+        <div className="cta-badge">GIft a Tarot Reading</div>
         <h2 className="tect-3xl font-bold">
-          Build and Personalize Your Learning Companion
+          What better gift than a personalized tarot reading?
         </h2>
-        <p>Pick a name, subject, voice and personality - and start learning through voice conversations that feel natural and fun</p>
-        <Image src="images/cta.svg" alt="Call To Action" width={362} height={232}/>
+        <p>Give the name, age, status and, of course, email of the person you want to gift the reading to - and let them have a glimpse ontheir personality and traits.</p>
+        <p>They will receive an email with a link to their reading, which they can access at any time.</p>
         <button className="btn-primary">
           <Image src="icons/plus.svg" alt="Add" width={12} height={12} />
           <Link href="companions/new">
-            <p>Build a new Companion</p>
+            <p>Gif a Reading</p>
           </Link>
         </button>
       </section>
