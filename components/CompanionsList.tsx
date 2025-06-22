@@ -13,8 +13,6 @@ import {
     import Image from "next/image";
 import { cn, getSubjectColor } from "@/lib/utils";
 
-
-
     interface CompanionsListProps {
     title?: string;
     companions?: Companion[];

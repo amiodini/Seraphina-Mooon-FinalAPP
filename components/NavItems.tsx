@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import path from "path";
 
 const navItems= [
-                {label: "The Deck", href: "/"}, 
+                {label: "The Deck", href: "/deck"}, 
                 {label: "Gift a Reading", href: "/companions"}, 
                 {label: "My Readings", href: "/my-journey"},
                 ] 

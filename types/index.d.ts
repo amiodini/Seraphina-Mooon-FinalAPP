@@ -81,3 +81,12 @@ interface CompanionComponentProps {
   voice: string;
   style: string;
 }
+
+type Card = Models.DocumentList<Models.Document> & {
+  name: string;
+  arcana: string;
+  image: string;
+  seed?: string;
+  meaning: string;
+  reversedMeaning: string;
+};
