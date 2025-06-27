@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 import path from "path";
 
 const footerItems= [
-                {label: "Biography", href: "/"}, 
-                {label: "Disclaimer", href: "/"},
-                {label: "Terms and conditiona", href: "/"}, 
+                {label: "Biography", href: "/bio"}, 
+                {label: "Disclaimer", href: "/disclaimer"},
+                {label: "Terms and conditions", href: "/terms-and-conditions"}, 
               ] 
 
 const FooterItems = () => {
