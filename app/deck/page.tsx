@@ -5,8 +5,7 @@ import {
     AccordionTrigger,
   } from "@/components/ui/accordion";
 
-  import Image from "next/image";
-import CompanionsList from "@/components/CompanionsList";
+
 import { deck } from "@/constants";
 import CardsList from "@/components/CardList";
   

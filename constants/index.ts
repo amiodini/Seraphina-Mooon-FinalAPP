@@ -23,12 +23,12 @@ export const voices = {
 
 export const deck = [
   {
-    name: "The Charriot",
+    name: "The Chariot",
     arcana: "Major",
     image: "/images/Tarots/MajorArcana/TheCharriot.jpg",
     seed: "",
-    meaning: "The Charriot represents determination, willpower, and control. It signifies overcoming obstacles and achieving victory through discipline and focus.",
-    reversedMeaning: "When reversed, The Charriot can indicate a lack of direction, loss of control, or feeling overwhelmed. It suggests the need to regain focus and determination to overcome challenges.",
+    meaning: "The Chariot represents determination, willpower, and control. It signifies overcoming obstacles and achieving victory through discipline and focus.",
+    reversedMeaning: "When reversed, The Chariot can indicate a lack of direction, loss of control, or feeling overwhelmed. It suggests the need to regain focus and determination to overcome challenges.",
   },
   {
     name: "The Death",
@@ -95,7 +95,7 @@ export const deck = [
     reversedMeaning: "When reversed, The Hierophant can indicate rebellion against tradition, questioning authority, or feeling disconnected from spiritual beliefs. It suggests the need to forge your own path and seek personal truth.",
   },
   {
-    name: "The HIgh Priestess",
+    name: "The High Priestess",
     arcana: "Major",
     image: "/images/Tarots/MajorArcana/TheHighPriestess.jpg",
     seed: "",
@@ -391,7 +391,7 @@ export const deck = [
   reversedMeaning: "When reversed, the Ten of Pentacles can indicate family conflicts, financial instability, or feeling disconnected from your roots. It suggests the need to address underlying issues and find ways to strengthen your family bonds and financial security.",
   },
   {
-    name: "Page of Pentacles",
+    name: "The Page of Pentacles",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Pentacles/PageOfPentacles.jpg",
     seed: "Pentacles",
@@ -399,7 +399,7 @@ export const deck = [
   reversedMeaning: "When reversed, the Page of Pentacles can indicate lack of focus, procrastination, or feeling overwhelmed by responsibilities. It suggests the need to reassess your priorities and find a more practical approach to your goals.",
   },
   {
-    name: "Knight of Pentacles",
+    name: "The Knight of Pentacles",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Pentacles/KnightOfPentacles.jpg",
     seed: "Pentacles",
@@ -407,7 +407,7 @@ export const deck = [
   reversedMeaning: "When reversed, the Knight of Pentacles can indicate stagnation, lack of progress, or being overly cautious. It suggests the need to find a balance between practicality and taking calculated risks to move forward.",
   },
   {
-    name: "Queen of Pentacles",
+    name: "The Queen of Pentacles",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Pentacles/QueenOfPentacles.jpg",
     seed: "Pentacles",
@@ -415,7 +415,7 @@ export const deck = [
   reversedMeaning: "When reversed, the Queen of Pentacles can indicate neglecting self-care, being overly focused on material possessions, or feeling overwhelmed by responsibilities. It suggests the need to prioritize your well-being and find a healthier balance in your life.",
   },
   {
-    name: "King of Pentacles",
+    name: "The King of Pentacles",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Pentacles/KingOfPentacles.jpg",
     seed: "Pentacles",
