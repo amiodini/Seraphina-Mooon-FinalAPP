@@ -279,7 +279,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Ten of Cups can indicate disharmony, conflicts within relationships, or unmet expectations. It suggests the need to address underlying issues and work towards restoring harmony and understanding.",
   },
   {
-    name: "Page of Cups",
+    name: "The Page of Cups",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Cups/PageOfCups.jpg",
     seed: "Cups",
@@ -287,7 +287,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Page of Cups can indicate emotional immaturity, unrealistic expectations, or difficulty expressing feelings. It suggests the need to develop emotional intelligence and find healthy outlets for your creativity.",
   },
   {
-    name: "Knight of Cups",
+    name: "The Knight of Cups",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Cups/KnightOfCups.jpg",
     seed: "Cups",
@@ -295,7 +295,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Knight of Cups can indicate unrealistic expectations, emotional instability, or being overly idealistic. It suggests the need to ground your emotions and find a balance between dreams and reality.",
   },
   {
-    name: "Queen of Cups",
+    name: "The Queen of Cups",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Cups/QueenOfCups.jpg",
     seed: "Cups",
@@ -303,7 +303,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Queen of Cups can indicate emotional overwhelm, lack of boundaries, or difficulty expressing feelings. It suggests the need to prioritize self-care and find balance in your emotional life.",
   },
   {
-    name: "King of Cups",
+    name: "The King of Cups",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Cups/KingOfCups.jpg",
     seed: "Cups",
@@ -503,7 +503,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Ten of Swords can indicate recovery, healing, or finding a way to move on from past pain. It suggests the need to let go of the past and embrace new opportunities for growth and renewal.",
   },
   {
-    name: "Page of Swords",
+    name: "The Page of Swords",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Swords/PageOfSwords.jpg",
     seed: "Swords",
@@ -511,7 +511,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Page of Swords can indicate immaturity, impulsiveness, or difficulty expressing thoughts. It suggests the need to develop your communication skills and find a more thoughtful approach to your ideas.",
   },
   {
-    name: "Knight of Swords",
+    name: "The Knight of Swords",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Swords/KnightOfSwords.jpg",
     seed: "Swords",
@@ -519,7 +519,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Knight of Swords can indicate impulsiveness, recklessness, or being overly aggressive. It suggests the need to find a balance between action and reflection, and to consider the consequences of your decisions.",
   },
   {
-    name: "Queen of Swords",
+    name: "The Queen of Swords",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Swords/QueenOfSwords.jpg",
     seed: "Swords",
@@ -527,7 +527,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Queen of Swords can indicate emotional detachment, harshness, or difficulty expressing emotions. It suggests the need to find a balance between intellect and emotions, and to approach situations with empathy and understanding.",
   },
   {
-    name: "King of Swords",
+    name: "The King of Swords",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Swords/KingOfSwords.jpg",
     seed: "Swords",
@@ -615,7 +615,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Ten of Wands can indicate releasing burdens, finding relief, or delegating responsibilities. It suggests the need to let go of unnecessary obligations and find a more balanced approach to your commitments.",
   },
   {
-    name: "Page of Wands",
+    name: "The Page of Wands",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Wands/PageOfWands.jpg",
     seed: "Wands",
@@ -623,7 +623,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Page of Wands can indicate immaturity, lack of direction, or feeling uninspired. It suggests the need to find clarity in your passions and take a more focused approach to your creative pursuits.",
   },
   {
-    name: "Knight of Wands",
+    name: "The Knight of Wands",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Wands/KnightOfWands.jpg",
     seed: "Wands",
@@ -631,7 +631,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Knight of Wands can indicate impulsiveness, recklessness, or being overly aggressive. It suggests the need to find a balance between action and reflection, and to consider the consequences of your decisions.",
   },
   {
-    name: "Queen of Wands",
+    name: "The Queen of Wands",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Wands/QueenOfWands.jpg",
     seed: "Wands",
@@ -639,7 +639,7 @@ export const deck = [
     reversedMeaning: "When reversed, the Queen of Wands can indicate insecurity, lack of confidence, or being overly controlling. It suggests the need to find a balance between assertiveness and empathy, and to embrace your true self without fear of judgment.",
   },
   {
-    name: "King of Wands",
+    name: "The King of Wands",
     arcana: "Minor",
     image: "/images/Tarots/MinorArcana/Wands/KingOfWands.jpg",
     seed: "Wands",

@@ -1,8 +1,60 @@
 'use server';
 
 import {auth} from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { currentUser } from "@clerk/nextjs/server";
 import {createSupabaseClient} from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+
+export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_status, gift_email }: SaveReading) => {
+/*
+    reading: string;
+    is_gift: boolean;
+    gift_name?: string;
+    gift_age?: string;
+    gift_status?: string;
+    gift_email?: string;
+*/
+
+    const user = await currentUser();
+
+    if (!user) redirect("/sign-in");
+
+    const author = user.emailAddresses[0].emailAddress;
+    const supabase = createSupabaseClient();
+
+    const { data, error } = await supabase
+        .from('readings')
+        .insert({
+            reading: reading,
+            author: author,
+            is_gift: is_gift,
+            gift_name: gift_name,  
+            gift_age: gift_age,
+            gift_status: gift_status,
+            gift_email: gift_email,
+        })
+        .select();
+
+    if(error || !data) throw new Error(error?.message || 'Failed to save the reading');
+
+    return data[0];
+}
+
+export const getReading = async (id: string) => {
+    const supabase = createSupabaseClient();
+
+    const { data, error } = await supabase
+        .from('readings')
+        .select()
+        .eq('id', id);
+
+    if(error) return console.log(error);
+
+    return data[0];
+}
+
+
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const { userId: author } = await auth();
@@ -184,3 +236,4 @@ export const getBookmarkedCompanions = async (userId: string) => {
   // We don't need the bookmarks data, so we return only the companions
   return data.map(({ companions }) => companions);
 };
+

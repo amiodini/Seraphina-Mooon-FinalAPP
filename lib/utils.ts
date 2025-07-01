@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { subjectsColors, voices } from "@/constants";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import { GoogleGenAI} from "@google/genai";
+import { saveReading } from "./actions/companion.actions";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,6 +63,10 @@ export const configureAssistant = (voice: string, style: string) => {
 };
 
 export const createTarotReading = async (name: string, age: string, status: string, isgift: boolean, email?: string) => {
+
+if(isgift && !email) {
+  throw new Error("Email is required for gift readings.");
+}
 
       const ai = new GoogleGenAI({
           apiKey: process.env.NEXT_PUBLIC_GENAI_API_KEY,
@@ -153,6 +158,24 @@ export const createTarotReading = async (name: string, age: string, status: stri
         }
   
       tarotReading = tarotReading.slice(3, -3).replace("json","").trim();
-      console.log(tarotReading);
-      return tarotReading;
+      
+      const tarotReadingJson = JSON.parse(tarotReading);
+      
+      let savedReading = null;
+      try {
+        savedReading = saveReading({
+          reading: JSON.stringify(tarotReadingJson),
+          is_gift: isgift,
+          gift_name: isgift ? name : undefined,
+          gift_age: isgift ? age : undefined,
+          gift_status: isgift ? status : undefined,
+          gift_email: isgift ? email : undefined,
+        });
+      } catch (error) {
+        console.error("Error saving reading:", error);
+      }
+      if (!savedReading) {
+        throw new Error("Failed to save the tarot reading.");
+      } 
+      return savedReading;
 };

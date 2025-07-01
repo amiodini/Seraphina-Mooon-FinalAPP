@@ -90,3 +90,12 @@ type Card = Models.DocumentList<Models.Document> & {
   meaning: string;
   reversedMeaning: string;
 };
+
+interface SaveReading {
+  reading: string;
+  is_gift: boolean;
+  gift_name?: string;
+  gift_age?: string;
+  gift_status?: string;
+  gift_email?: string;
+}
