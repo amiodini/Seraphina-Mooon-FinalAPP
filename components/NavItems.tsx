@@ -6,7 +6,7 @@ import path from "path";
 
 const navItems= [
                 {label: "The Deck", href: "/deck"}, 
-                {label: "Gift a Reading", href: "/companions"}, 
+                {label: "Gift a Reading", href: "/readings/new"}, 
                 {label: "My Readings", href: "/readings"},
                 ] 
 

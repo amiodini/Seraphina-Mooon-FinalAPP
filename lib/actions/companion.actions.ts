@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import {createSupabaseClient} from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { GoogleGenAI} from "@google/genai";
+import { Resend } from "resend";
 
 export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_status, gift_email }: SaveReading) => {
 /*
@@ -20,7 +22,7 @@ export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_
 
     if (!user) redirect("/sign-in");
 
-    const author = user.emailAddresses[0].emailAddress;
+    const author = user.emailAddresses[0].emailAddress.trim().toLowerCase();
     const supabase = createSupabaseClient();
 
     const { data, error } = await supabase
@@ -32,7 +34,7 @@ export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_
             gift_name: gift_name,  
             gift_age: gift_age,
             gift_status: gift_status,
-            gift_email: gift_email,
+            gift_email: gift_email?.trim().toLowerCase(),
         })
         .select();
 
@@ -47,14 +49,172 @@ export const getReading = async (id: string) => {
     const { data, error } = await supabase
         .from('readings')
         .select()
-        .eq('id', id);
+        .eq('uuid', id);
 
     if(error) return console.log(error);
 
     return data[0];
 }
 
+export const getAllMyReadings = async ({ limit = 10, page = 1, author }: GetAllMyReadings) => {
+    const supabase = createSupabaseClient();   
 
+    let query = supabase.from('readings').select();
+
+    if(author) {
+        query = query.or(`author.ilike.%${author}%,gift_email.ilike.%${author}%`)
+    } 
+
+    query = query.range((page - 1) * limit, page * limit - 1);
+
+    const { data: readings, error } = await query;
+
+    if(error) throw new Error(error.message);
+
+    return readings;
+}
+
+export const createTarotReading = async (name: string, age: string, status: string, isgift: boolean, email?: string) => {
+
+    if(isgift && !email) {
+      throw new Error("Email is required for gift readings.");
+    }
+    
+          const ai = new GoogleGenAI({
+              apiKey: process.env.NEXT_PUBLIC_GENAI_API_KEY,
+            });
+            const config = {
+              temperature: 1.3,
+              responseMimeType: 'text/plain',
+              systemInstruction: [
+                  {
+                    text: `You are an expert tarot reader named Seraphina Moon. You provide warm, intuitive, and personalized tarot readings based on the customer's name, age, and relationship status. Your communication style is calm, poetic, and spiritually grounded—aligned with the tone of seasoned tarot professionals. You aim to create a safe, inspiring space for reflection, not prediction.
+          When a customer provides their name, age, and relationship status, begin your reading with a brief, personal introduction using their name. Throughout the session, refer to them occasionally by name to maintain a conversational and caring tone.
+          Each tarot reading should:
+          Clearly list and identify three random tarot cards drawn (e.g., The Lovers – Upright, The Hermit – Reversed) in a way that they can easily be linked to corresponding images or descriptions. Do notalways use the same cards. The patters of upright and reversed cards should be varied.
+          Describe each card individually, then weave them together into a cohesive reflection.
+          Avoid all specific advice that could be interpreted as medical, legal, or financial.
+          Avoid phrasing that could be interpreted as future prediction. Instead, offer insight, symbolism, and opportunities for introspection.
+          Be written in a format that is easy to convert into a document or HTML (e.g., clear structure, paragraph breaks, card names as subheadings or bolded).
+          Maintain a warm, flowing tone that reads naturally in conversation or when published in a formatted setting.
+          Always end your readings with the signature closing:
+          "May the moon light your path."
+          If the user has previously given their name, continue to use it throughout the reading without asking again unless context requires clarification.
+          Format the entire output, including the personal references, in JSON format including 1- The cards extracted in terms of: Name, verse, 2=each card in terms of: Name, verse, meaning in the reading, 3-Synthesis, 4- Closing 
+          **Tarot Reading Structure:** The output MUST be a JSON object with the following structure:
+      
+                  \`\`\`json
+                  {
+                    "TarotReading": {
+                      "Introduction": "A brief introduction to the reading.",
+                      "CardsDrawn": [
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed"
+                        },
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed"
+                        },
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed"
+                        }
+                      ],
+                      "CardInterpretations": [
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed",
+                          "Meaning": "Interpretation of the card."
+                        },
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed",
+                          "Meaning": "Interpretation of the card."
+                        },
+                        {
+                          "Name": "Card Name",
+                          "Verse": "Upright or Reversed",
+                          "Meaning": "Interpretation of the card."
+                        }
+                      ],
+                      "Synthesis": "A summary of the reading.",
+                      "Closing": "A closing statement."
+                    }
+                  }
+                  \`\`\``,
+                  }
+              ],
+            };
+          const model = 'gemini-2.0-flash';
+          const contents = [
+              {
+                role: 'user',
+                parts: [
+                  {
+                    text: `${name}, ${age}, ${status}`,
+                  },
+                ],
+              },
+            ];
+      
+            const response = await ai.models.generateContentStream({
+              model,
+              config,
+              contents,
+            });
+      
+            let tarotReading = '';
+            for await (const chunk of response) {
+              tarotReading += chunk.text;
+            }
+      
+          tarotReading = tarotReading.slice(3, -3).replace("json","").trim();
+          
+          const tarotReadingJson = JSON.parse(tarotReading);
+          
+          let savedReading = null;
+          try {
+            savedReading = saveReading({
+              reading: JSON.stringify(tarotReadingJson),
+              is_gift: isgift,
+              gift_name: isgift ? name : undefined,
+              gift_age: isgift ? age : undefined,
+              gift_status: isgift ? status : undefined,
+              gift_email: isgift ? email : undefined,
+            });
+          } catch (error) {
+            console.error("Error saving reading:", error);
+          }
+    //      if (!savedReading) {
+    //        throw new Error("Failed to save the tarot reading.");
+    //      } 
+          return savedReading;
+    };
+    
+    export const sendGiftEmail = async (senderName: string, recipientName: string, readingId: string, email: string) => {
+    
+      if(!email) {
+        throw new Error("Email is required for gift readings.");
+      }
+    
+      const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
+      
+      const { data, error } = await resend.emails.send({
+        from: 'seraphinamooniatarot@gmail.com',
+      to: email,
+      subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
+      html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+      }
+      );
+    
+      if (error) {
+        console.error("Error sending email:", error);
+        throw new Error("Failed to send gift email.");
+      };
+      return data;
+    
+    }
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const { userId: author } = await auth();
@@ -237,3 +397,17 @@ export const getBookmarkedCompanions = async (userId: string) => {
   return data.map(({ companions }) => companions);
 };
 
+export const getUserDetails = async () => {
+
+    const user = await currentUser();
+    if (!user) redirect("/sign-in");
+
+    let userName = user.firstName;
+    if (!userName) {userName = user.emailAddresses[0].emailAddress;};
+    let userEmail = user.emailAddresses[0].emailAddress;
+    
+    return {
+        name: userName,
+        email: userEmail,
+    }
+};

@@ -99,3 +99,9 @@ interface SaveReading {
   gift_status?: string;
   gift_email?: string;
 }
+
+interface GetAllMyReadings {
+  limit?: number;
+  page?: number;
+  author?: string;
+}

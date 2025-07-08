@@ -11,8 +11,6 @@ const Page = async () => {
 
   return (
     <main>
-      
-
         <section className="home-section">
           <img
               src="/images/seraphinamooncurly.jpg"

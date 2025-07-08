@@ -9,15 +9,14 @@ interface TarotReadingPageProps {
 
 const TarotReadingDisplay = async ({params}: TarotReadingPageProps) => {
   const { id } = await params;
-  console.log("id in:", id);
+
   const tarotReading = await getReading(id);
   const user = await currentUser();
- 
-
+    
   if (!user) redirect("/sign-in");
-  if (!tarotReading) redirect("/companions");
+  if (!tarotReading) redirect("/readings");
 
-  const tarotReadingJson = JSON.parse(tarotReading);
+  const tarotReadingJson = JSON.parse(tarotReading.reading);
 
     return (
       <main>

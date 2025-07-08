@@ -1,181 +1,22 @@
-"use client"
+import ReadingForm from "@/components/ReadingForm";
+import {auth} from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+const NewReading = async () => {
+  const { userId } = await auth();
 
-import {Textarea} from "@/components/ui/textarea";
 
-import {redirect} from "next/navigation";
-import { currentUser } from '@clerk/nextjs/server';
-import { createTarotReading } from '@/lib/utils';
+  if (!userId) redirect("/sign-in"); 
 
-const formSchema = z.object({
-    name: z.string().min(1, { message: 'Name is required.'}),
-    age: z.string().min(2, { message: 'Minimum age is 18.'}),
-    status: z.string().min(1, { message: 'What do you want to ask Seraphina?'}),
-    isGift: z.string(),
-    giftEmail: z.string().email("Please enter a valid email address").optional(),
-})
+  return (
+    <main className="min-lg:w-1/3 min-md:w-2/3 items-center justify-center">
+      <article className="w-full gap-4 flex flex-col">
+        <h1>Ask for a new Tarot Reading</h1>
 
-const CreateReading = async () =>  {
+        <ReadingForm />
+      </article>
+    </main>
+  )
+}
 
-    const user = await currentUser();
-    if (!user) redirect("/sign-in");
-
-    let userName = user.firstName;
-    if (!userName) {userName = user.emailAddresses[0].emailAddress;};
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            name: userName,
-            age: '',
-            status: '',
-            isGift: 'NO',
-            giftEmail: '',
-        },
-    })
-
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        const tarotReading = await createTarotReading(values.name, values.age, values.status, values.isGift === 'YES', values.giftEmail);
-
-        if(tarotReading) {
-            if(values.isGift === 'YES') {
-                //senf email with the ID
-            }
-            else {
-                redirect(`/readings/${tarotReading.id}`);
-                }
-            } else {
-            console.log('Failed to create a Tarot Reading');
-            redirect('/');
-        }
-    }
-
-    return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Enter your name or the person's name if it's a gift"
-                                    {...field}
-                                    className="input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="age"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>What is your age?</FormLabel>
-                            <FormControl>
-                            <Input
-                                    type="number"
-                                    placeholder="48"
-                                    {...field}
-                                    className="input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>What is your relationship status?</FormLabel>
-                            <FormControl>
-                            <Textarea
-                                    placeholder="Ex. madly in love, single, divorced, etc."
-                                    {...field}
-                                    className="input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="isGift"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Is This a Gift?</FormLabel>
-                            <FormControl>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                    defaultValue={field.value}
-                                >
-                                    <SelectTrigger className="input capitalize">
-                                        <SelectValue placeholder="Select the subject" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="NO">No</SelectItem>
-                                        <SelectItem value="YES">Yes</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="giftEmail"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>If it's a gift, who do we have to send it to?</FormLabel>
-                            <FormControl>
-                            <Input
-                                    type="text"
-                                    placeholder="Ex. my.friend@mail.com"
-                                    {...field}
-                                    className="input"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormDescription>
-                    By clicking "Generate your Reading", you agree to our <a href="/terms-and-conditions" className="text-blue-500 underline" target="_blank">Terms and conditions</a>.  
-                </FormDescription>
-                <Button type="submit" className="w-full cursor-pointer">Generate your Reading</Button>
-            </form>
-        </Form>
-    )
-};
-
-export default CreateReading;
+export default NewReading
