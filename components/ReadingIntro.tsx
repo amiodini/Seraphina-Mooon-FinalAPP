@@ -23,7 +23,7 @@ const ReadingIntro = () => {
           </div>
         <button className="btn-primary">
           <Image src="icons/plus.svg" alt="Add" width={12} height={12} />
-          <Link href="companions/new">
+          <Link href="readings/new">
             <p>Get your Reading</p>
           </Link>
         </button>

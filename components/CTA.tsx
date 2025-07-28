@@ -13,7 +13,7 @@ const CTA = () => {
         <p>They will receive an email with a link to their reading, which they can access at any time.</p>
         <button className="btn-primary">
           <Image src="icons/plus.svg" alt="Add" width={12} height={12} />
-          <Link href="companions/new">
+          <Link href="readings/new">
             <p>Gif a Reading</p>
           </Link>
         </button>

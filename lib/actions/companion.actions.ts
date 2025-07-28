@@ -201,10 +201,108 @@ export const createTarotReading = async (name: string, age: string, status: stri
       const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
       
       const { data, error } = await resend.emails.send({
-        from: 'seraphinamooniatarot@gmail.com',
-      to: email,
-      subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
-      html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
+        from: 'Seraphina Moon <seraphina.moon@readings.smoonai.top>',
+        reply_to: 'seraphinamooniatarot@gmail.com',
+        to: email,
+        subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
+        html: `
+        <!DOCTYPE html>
+<html lang="en">
+            <head>
+      <meta charset="UTF-8">
+      <title>Your Gift from Seraphina Moon</title>
+      <style>
+        body {
+          font-family: 'Georgia', serif;
+          background-color: #f8f4ef;
+          color: #2d2a26;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: 40px auto;
+          background-color: #ffffff;
+          border-radius: 12px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          overflow: hidden;
+        }
+        .header {
+          background-color: #1a1a2e;
+          padding: 30px;
+          text-align: center;
+        }
+        .header img {
+          max-width: 100px;
+          margin-bottom: 20px;
+        }
+        .header h1 {
+          color: #f9e4c8;
+          font-size: 24px;
+          margin: 0;
+          letter-spacing: 1px;
+        }
+        .content {
+          padding: 30px;
+        }
+        .content h2 {
+          color: #333;
+          font-size: 20px;
+        }
+        .content p {
+          font-size: 16px;
+          line-height: 1.6;
+          color: #444;
+        }
+        .cta-button {
+          display: inline-block;
+          background-color: #c28f52;
+          color: #fff;
+          padding: 14px 24px;
+          margin-top: 25px;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: bold;
+          font-size: 16px;
+        }
+        .footer {
+          text-align: center;
+          padding: 20px;
+          font-size: 12px;
+          color: #888;
+        }
+      </style>
+    </head>
+    <body>
+    <div className="container">
+    <div className="header">
+      <img src="https://www.smoonai.top/images/logo.svg" alt="Seraphina Moon Logo" />
+      <h1>You have Been Gifted a Reading</h1>
+    </div>
+    <div className="content">
+      <h2>Hello <strong>${recipientName}</strong>,</h2>
+      <p>
+        A little bit of stardust has found its way to you. <strong>${senderName}</strong> has sent you a gift from <em>Seraphina Moon</em>: a personalized tarot reading woven with magic, metaphor, and a touch of cosmic insight.
+      </p>
+      <p>
+        This is not just a reading. It is an invitation. To pause. To wonder. To reflect. And maybe even to smile at what the cards whisper to you.
+      </p>
+      <p style="text-align: center;">
+        <a href='http://www.smoonai.top/readings/${readingId}'>Open Your Tarot Gift</a>
+      </p>
+      <p>
+        May this gift bring you clarity, curiosity, or perhaps just a moment of soulful delight.
+      </p>
+      <p style="font-style: italic;">With warmth and wonder,<br />— Seraphina Moon</p>
+    </div>
+    <div className="footer">
+      You are receiving this email because someone thought you would enjoy a reading.
+    </div>
+  </div>
+  </body>
+  </html>
+        `,
+
       }
       );
     
@@ -215,6 +313,45 @@ export const createTarotReading = async (name: string, age: string, status: stri
       return data;
     
     }
+
+export const newReadingPermissions = async (author: string, isgift: boolean) => {
+    const { has } = await auth();
+    const supabase = createSupabaseClient();
+
+    let tLimit = 0;
+    let gLimit = 0;
+
+    if(has({ plan: 'basic' })) {
+        tLimit = 2;
+        gLimit = 2;
+    } else if(has({ plan: "core" })) {
+        tLimit = 8;
+        gLimit = 8;
+    } else if(has({ plan: "everyday" })) {
+        tLimit = 30;
+        gLimit = 30;
+    }
+
+    const { data, error } = await supabase
+        .from('readings')
+        .select('uuid', { count: 'exact' })
+        .eq('author', author)
+        .eq('is_gift', isgift)
+
+    if(error) throw new Error(error.message);
+
+    const readingCount = data?.length;
+
+    if(isgift && readingCount >= gLimit) {
+          return false;
+    }
+    if(!isgift && readingCount >= tLimit) {
+      return false;
+    }
+
+    return true;
+}
+
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const { userId: author } = await auth();

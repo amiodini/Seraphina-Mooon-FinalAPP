@@ -25,7 +25,7 @@ import {
 import {Textarea} from "@/components/ui/textarea";
 
 import {redirect} from "next/navigation";
-import { createTarotReading, getUserDetails, sendGiftEmail } from '@/lib/actions/companion.actions';
+import { createTarotReading, getUserDetails, sendGiftEmail, newReadingPermissions } from '@/lib/actions/companion.actions';
 
 const formSchema = z.object({
     name: z.string().min(1, { message: 'Name is required.'}),
@@ -75,6 +75,17 @@ const ReadingForm = () =>  {
             return;
         }
         
+        if(!newReadingPermissions(userEmail, values.isGift === 'YES'))
+        {
+            if(values.isGift === 'YES')
+            {
+                document.getElementById('errorLabel')!.innerText = "You have exceeded the number of allowed gifts";
+                return;
+            }
+            document.getElementById('errorLabel')!.innerText = "Sorry, you have exceeded the number of possible readings for the month. Why not upgrade to get more?.";
+            return;
+        }
+
         if(values.isGift === 'YES') {
             const sentMail = await sendGiftEmail(userName, values.name, tarotReading.id, values.giftEmail?.trim().toLowerCase() || "");
             if (!sentMail) {
@@ -132,10 +143,10 @@ const ReadingForm = () =>  {
                     name="status"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>What is your relationship status?</FormLabel>
+                            <FormLabel>What do you want the cards to tell you?</FormLabel>
                             <FormControl>
                             <Textarea
-                                    placeholder="Ex. madly in love, single, divorced, etc."
+                                    placeholder="Remember: the cards do not predict the future"
                                     {...field}
                                     className="input"
                                 />
