@@ -65,7 +65,7 @@ import {
                 {giftedReadings.map((reading) => (
                   <div key={reading.uuid} className="border border-black rounded-lg p-3">
                     <h2 className="text-sm text-muted-foreground">
-                      Gifted to: {new reading.gift_name} 
+                      Gifted to: {reading.gift_name} 
                     </h2>
                     <p className="text-sm text-muted-foreground">Age: {reading.gift_age}</p>
                     <p className="text-sm text-muted-foreground">Status: {reading.gift_status}</p>

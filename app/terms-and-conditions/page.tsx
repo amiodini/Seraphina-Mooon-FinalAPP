@@ -12,7 +12,6 @@ const TaC = async () => {
         <h2 className="font-bold">PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY BEFORE USING THE SERAPHINA MOON AI TAROT READER. </h2> 
         <h2 className="font-bold">BY ACCESSING OR USING THE SERAPHINA MOON AI TAROT READER, YOU AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS.</h2>
         <br />
-        <p>
 <p className="font-bold"> 1. DEFINITIONS</p>
 
 1.1 "Seraphina Moon," "AI Tarot Reader," or "Service" refers to the artificial intelligence tarot reading software and related services.
@@ -116,7 +115,7 @@ d) Use the Service in any manner that could disable, overburden, damage, or impa
 <br />
 12.5 Contact Information. Questions or comments about the Service or these Terms and Conditions may be directed to the Provider seraphinamooiatarot@gmail.com.
 <br />
-BY USING THE SERAPHINA MOON AI TAROT READER, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS AND CONDITIONS, UNDERSTAND THEM, AND AGREE TO BE BOUND BY THEIR TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO THESE TERMS AND CONDITIONS, YOU MUST NOT ACCESS OR USE THE SERVICE.</p>
+BY USING THE SERAPHINA MOON AI TAROT READER, YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS AND CONDITIONS, UNDERSTAND THEM, AND AGREE TO BE BOUND BY THEIR TERMS AND CONDITIONS. IF YOU DO NOT AGREE TO THESE TERMS AND CONDITIONS, YOU MUST NOT ACCESS OR USE THE SERVICE.
       </article>
       
     </main>

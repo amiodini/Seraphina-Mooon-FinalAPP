@@ -8,7 +8,7 @@ const Navbar = () => {
       <nav className="navbar">
         <Link href="/" >
             <div className="flex items-center gap-2.5 cursor-pointer">
-                <img src="images/logo.svg" 
+                <img src="./images/logo.svg" 
                     alt="logo" width={46} height={44}
                 />
                 <p className="font-bold text-2xl">Seraphina Moon</p>

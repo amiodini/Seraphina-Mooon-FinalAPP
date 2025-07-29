@@ -199,10 +199,11 @@ export const createTarotReading = async (name: string, age: string, status: stri
       }
     
       const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
+      const sitePath = process.env.NEXT_PUBLIC_SITE_PATH || "https://www.smoonai.top";
       
       const { data, error } = await resend.emails.send({
         from: 'Seraphina Moon <seraphina.moon@readings.smoonai.top>',
-        reply_to: 'seraphinamooniatarot@gmail.com',
+        replyTo: 'seraphinamooniatarot@gmail.com',
         to: email,
         subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
         html: `
@@ -276,7 +277,7 @@ export const createTarotReading = async (name: string, age: string, status: stri
     <body>
     <div className="container">
     <div className="header">
-      <img src="https://www.smoonai.top/images/logo.svg" alt="Seraphina Moon Logo" />
+      <img src='${sitePath}/images/logo.svg' alt="Seraphina Moon Logo" />
       <h1>You have Been Gifted a Reading</h1>
     </div>
     <div className="content">
@@ -288,7 +289,7 @@ export const createTarotReading = async (name: string, age: string, status: stri
         This is not just a reading. It is an invitation. To pause. To wonder. To reflect. And maybe even to smile at what the cards whisper to you.
       </p>
       <p style="text-align: center;">
-        <a href='http://www.smoonai.top/readings/${readingId}'>Open Your Tarot Gift</a>
+        <a href='${sitePath}/readings/${readingId}'>Open Your Tarot Gift</a>
       </p>
       <p>
         May this gift bring you clarity, curiosity, or perhaps just a moment of soulful delight.
