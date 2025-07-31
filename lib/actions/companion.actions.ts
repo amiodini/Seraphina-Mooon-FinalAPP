@@ -1,15 +1,22 @@
-'use server';
+"use server";
 
-import {auth} from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
-import {createSupabaseClient} from "@/lib/supabase";
+import { createSupabaseClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
-import { GoogleGenAI} from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { Resend } from "resend";
 
-export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_status, gift_email }: SaveReading) => {
-/*
+export const saveReading = async ({
+  reading,
+  is_gift,
+  gift_name,
+  gift_age,
+  gift_status,
+  gift_email,
+}: SaveReading) => {
+  /*
     reading: string;
     is_gift: boolean;
     gift_name?: string;
@@ -18,77 +25,87 @@ export const saveReading = async ({ reading, is_gift, gift_name, gift_age, gift_
     gift_email?: string;
 */
 
-    const user = await currentUser();
+  const user = await currentUser();
 
-    if (!user) redirect("/sign-in");
+  if (!user) redirect("/sign-in");
 
-    const author = user.emailAddresses[0].emailAddress.trim().toLowerCase();
-    const supabase = createSupabaseClient();
+  const author = user.emailAddresses[0].emailAddress.trim().toLowerCase();
+  const supabase = createSupabaseClient();
 
-    const { data, error } = await supabase
-        .from('readings')
-        .insert({
-            reading: reading,
-            author: author,
-            is_gift: is_gift,
-            gift_name: gift_name,  
-            gift_age: gift_age,
-            gift_status: gift_status,
-            gift_email: gift_email?.trim().toLowerCase(),
-        })
-        .select();
+  const { data, error } = await supabase
+    .from("readings")
+    .insert({
+      reading: reading,
+      author: author,
+      is_gift: is_gift,
+      gift_name: gift_name,
+      gift_age: gift_age,
+      gift_status: gift_status,
+      gift_email: gift_email?.trim().toLowerCase(),
+    })
+    .select();
 
-    if(error || !data) throw new Error(error?.message || 'Failed to save the reading');
+  if (error || !data)
+    throw new Error(error?.message || "Failed to save the reading");
 
-    return data[0];
-}
+  return data[0];
+};
 
 export const getReading = async (id: string) => {
-    const supabase = createSupabaseClient();
+  const supabase = createSupabaseClient();
 
-    const { data, error } = await supabase
-        .from('readings')
-        .select()
-        .eq('uuid', id);
+  const { data, error } = await supabase
+    .from("readings")
+    .select()
+    .eq("uuid", id);
 
-    if(error) return console.log(error);
+  if (error) return console.log(error);
 
-    return data[0];
-}
+  return data[0];
+};
 
-export const getAllMyReadings = async ({ limit = 10, page = 1, author }: GetAllMyReadings) => {
-    const supabase = createSupabaseClient();   
+export const getAllMyReadings = async ({
+  limit = 10,
+  page = 1,
+  author,
+}: GetAllMyReadings) => {
+  const supabase = createSupabaseClient();
 
-    let query = supabase.from('readings').select();
+  let query = supabase.from("readings").select();
 
-    if(author) {
-        query = query.or(`author.ilike.%${author}%,gift_email.ilike.%${author}%`)
-    } 
+  if (author) {
+    query = query.or(`author.ilike.%${author}%,gift_email.ilike.%${author}%`);
+  }
 
-    query = query.range((page - 1) * limit, page * limit - 1);
+  query = query.range((page - 1) * limit, page * limit - 1);
 
-    const { data: readings, error } = await query;
+  const { data: readings, error } = await query;
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return readings;
-}
+  return readings;
+};
 
-export const createTarotReading = async (name: string, age: string, status: string, isgift: boolean, email?: string) => {
+export const createTarotReading = async (
+  name: string,
+  age: string,
+  status: string,
+  isgift: boolean,
+  email?: string
+) => {
+  if (isgift && !email) {
+    throw new Error("Email is required for gift readings.");
+  }
 
-    if(isgift && !email) {
-      throw new Error("Email is required for gift readings.");
-    }
-    
-          const ai = new GoogleGenAI({
-              apiKey: process.env.NEXT_PUBLIC_GENAI_API_KEY,
-            });
-            const config = {
-              temperature: 1.3,
-              responseMimeType: 'text/plain',
-              systemInstruction: [
-                  {
-                    text: `You are an expert tarot reader named Seraphina Moon. You provide warm, intuitive, and personalized tarot readings based on the customer's name, age, and relationship status. Your communication style is calm, poetic, and spiritually grounded—aligned with the tone of seasoned tarot professionals. You aim to create a safe, inspiring space for reflection, not prediction.
+  const ai = new GoogleGenAI({
+    apiKey: process.env.NEXT_PUBLIC_GENAI_API_KEY,
+  });
+  const config = {
+    temperature: 1.3,
+    responseMimeType: "text/plain",
+    systemInstruction: [
+      {
+        text: `You are an expert tarot reader named Seraphina Moon. You provide warm, intuitive, and personalized tarot readings based on the customer's name, age, and relationship status. Your communication style is calm, poetic, and spiritually grounded—aligned with the tone of seasoned tarot professionals. You aim to create a safe, inspiring space for reflection, not prediction.
           When a customer provides their name, age, and relationship status, begin your reading with a brief, personal introduction using their name. Throughout the session, refer to them occasionally by name to maintain a conversational and caring tone.
           Each tarot reading should:
           Clearly list and identify three random tarot cards drawn (e.g., The Lovers – Upright, The Hermit – Reversed) in a way that they can easily be linked to corresponding images or descriptions. Do notalways use the same cards. The patters of upright and reversed cards should be varied.
@@ -143,70 +160,75 @@ export const createTarotReading = async (name: string, age: string, status: stri
                     }
                   }
                   \`\`\``,
-                  }
-              ],
-            };
-          const model = 'gemini-2.0-flash';
-          const contents = [
-              {
-                role: 'user',
-                parts: [
-                  {
-                    text: `${name}, ${age}, ${status}`,
-                  },
-                ],
-              },
-            ];
-      
-            const response = await ai.models.generateContentStream({
-              model,
-              config,
-              contents,
-            });
-      
-            let tarotReading = '';
-            for await (const chunk of response) {
-              tarotReading += chunk.text;
-            }
-      
-          tarotReading = tarotReading.slice(3, -3).replace("json","").trim();
-          
-          const tarotReadingJson = JSON.parse(tarotReading);
-          
-          let savedReading = null;
-          try {
-            savedReading = saveReading({
-              reading: JSON.stringify(tarotReadingJson),
-              is_gift: isgift,
-              gift_name: isgift ? name : undefined,
-              gift_age: isgift ? age : undefined,
-              gift_status: isgift ? status : undefined,
-              gift_email: isgift ? email : undefined,
-            });
-          } catch (error) {
-            console.error("Error saving reading:", error);
-          }
-    //      if (!savedReading) {
-    //        throw new Error("Failed to save the tarot reading.");
-    //      } 
-          return savedReading;
-    };
-    
-    export const sendGiftEmail = async (senderName: string, recipientName: string, readingId: string, email: string) => {
-    
-      if(!email) {
-        throw new Error("Email is required for gift readings.");
-      }
-    
-      const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
-      const sitePath = process.env.NEXT_PUBLIC_SITE_PATH || "https://www.smoonai.top";
-      
-      const { data, error } = await resend.emails.send({
-        from: 'Seraphina Moon <seraphina.moon@readings.smoonai.top>',
-        replyTo: 'seraphinamooniatarot@gmail.com',
-        to: email,
-        subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
-        html: `
+      },
+    ],
+  };
+  const model = "gemini-2.0-flash";
+  const contents = [
+    {
+      role: "user",
+      parts: [
+        {
+          text: `${name}, ${age}, ${status}`,
+        },
+      ],
+    },
+  ];
+
+  const response = await ai.models.generateContentStream({
+    model,
+    config,
+    contents,
+  });
+
+  let tarotReading = "";
+  for await (const chunk of response) {
+    tarotReading += chunk.text;
+  }
+
+  tarotReading = tarotReading.slice(3, -3).replace("json", "").trim();
+
+  const tarotReadingJson = JSON.parse(tarotReading);
+
+  let savedReading = null;
+  try {
+    savedReading = saveReading({
+      reading: JSON.stringify(tarotReadingJson),
+      is_gift: isgift,
+      gift_name: isgift ? name : undefined,
+      gift_age: isgift ? age : undefined,
+      gift_status: isgift ? status : undefined,
+      gift_email: isgift ? email : undefined,
+    });
+  } catch (error) {
+    console.error("Error saving reading:", error);
+  }
+  //      if (!savedReading) {
+  //        throw new Error("Failed to save the tarot reading.");
+  //      }
+  return savedReading;
+};
+
+export const sendGiftEmail = async (
+  senderName: string,
+  recipientName: string,
+  readingId: string,
+  email: string
+) => {
+  if (!email) {
+    throw new Error("Email is required for gift readings.");
+  }
+
+  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
+  const sitePath =
+    process.env.NEXT_PUBLIC_SITE_PATH || "https://www.smoonai.top";
+
+  const { data, error } = await resend.emails.send({
+    from: "Seraphina Moon <seraphina.moon@readings.smoonai.top>",
+    replyTo: "seraphinamooniatarot@gmail.com",
+    to: email,
+    subject: `${senderName} sent you a Tarot Reading Gift by Seraphina Moon`,
+    html: `
         <!DOCTYPE html>
 <html lang="en">
             <head>
@@ -303,189 +325,194 @@ export const createTarotReading = async (name: string, age: string, status: stri
   </body>
   </html>
         `,
+  });
 
-      }
-      );
-    
-      if (error) {
-        console.error("Error sending email:", error);
-        throw new Error("Failed to send gift email.");
-      };
-      return data;
-    
-    }
+  if (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send gift email.");
+  }
+  return data;
+};
 
-export const newReadingPermissions = async (author: string, isgift: boolean) => {
-    const { has } = await auth();
-    const supabase = createSupabaseClient();
+export const newReadingPermissions = async (
+  author: string,
+  isgift: boolean
+) => {
+  const { has } = await auth();
+  const supabase = createSupabaseClient();
 
-    let tLimit = 0;
-    let gLimit = 0;
+  let tLimit = 0;
+  let gLimit = 0;
 
-    if(has({ plan: 'basic' })) {
-        tLimit = 2;
-        gLimit = 2;
-    } else if(has({ plan: "core" })) {
-        tLimit = 8;
-        gLimit = 8;
-    } else if(has({ plan: "everyday" })) {
-        tLimit = 30;
-        gLimit = 30;
-    }
+  if (has({ plan: "basic" })) {
+    tLimit = 2;
+    gLimit = 2;
+  } else if (has({ plan: "core" })) {
+    tLimit = 8;
+    gLimit = 8;
+  } else if (has({ plan: "everyday" })) {
+    tLimit = 30;
+    gLimit = 30;
+  }
 
-    const { data, error } = await supabase
-        .from('readings')
-        .select('uuid', { count: 'exact' })
-        .eq('author', author)
-        .eq('is_gift', isgift)
+  const { data, error } = await supabase
+    .from("readings")
+    .select("uuid", { count: "exact" })
+    .eq("author", author)
+    .eq("is_gift", isgift);
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    const readingCount = data?.length;
+  const readingCount = data?.length;
 
-    if(isgift && readingCount >= gLimit) {
-          return false;
-    }
-    if(!isgift && readingCount >= tLimit) {
-      return false;
-    }
+  if (isgift && readingCount >= gLimit) {
+    return false;
+  }
+  if (!isgift && readingCount >= tLimit) {
+    return false;
+  }
 
-    return true;
-}
-
+  return true;
+};
 
 export const createCompanion = async (formData: CreateCompanion) => {
-    const { userId: author } = await auth();
-    const supabase = createSupabaseClient();
+  const { userId: author } = await auth();
+  const supabase = createSupabaseClient();
 
-    const { data, error } = await supabase
-        .from('companions')
-        .insert({...formData, author })
-        .select();
+  const { data, error } = await supabase
+    .from("companions")
+    .insert({ ...formData, author })
+    .select();
 
-    if(error || !data) throw new Error(error?.message || 'Failed to create a companion');
+  if (error || !data)
+    throw new Error(error?.message || "Failed to create a companion");
 
-    return data[0];
-}
+  return data[0];
+};
 
-export const getAllCompanions = async ({ limit = 10, page = 1, subject, topic }: GetAllCompanions) => {
-    const supabase = createSupabaseClient();
+export const getAllCompanions = async ({
+  limit = 10,
+  page = 1,
+  subject,
+  topic,
+}: GetAllCompanions) => {
+  const supabase = createSupabaseClient();
 
-    let query = supabase.from('companions').select();
+  let query = supabase.from("companions").select();
 
-    if(subject && topic) {
-        query = query.ilike('subject', `%${subject}%`)
-            .or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`)
-    } else if(subject) {
-        query = query.ilike('subject', `%${subject}%`)
-    } else if(topic) {
-        query = query.or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`)
-    }
+  if (subject && topic) {
+    query = query
+      .ilike("subject", `%${subject}%`)
+      .or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`);
+  } else if (subject) {
+    query = query.ilike("subject", `%${subject}%`);
+  } else if (topic) {
+    query = query.or(`topic.ilike.%${topic}%,name.ilike.%${topic}%`);
+  }
 
-    query = query.range((page - 1) * limit, page * limit - 1);
+  query = query.range((page - 1) * limit, page * limit - 1);
 
-    const { data: companions, error } = await query;
+  const { data: companions, error } = await query;
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return companions;
-}
+  return companions;
+};
 
 export const getCompanion = async (id: string) => {
-    const supabase = createSupabaseClient();
+  const supabase = createSupabaseClient();
 
-    const { data, error } = await supabase
-        .from('companions')
-        .select()
-        .eq('id', id);
+  const { data, error } = await supabase
+    .from("companions")
+    .select()
+    .eq("id", id);
 
-    if(error) return console.log(error);
+  if (error) return console.log(error);
 
-    return data[0];
-}
+  return data[0];
+};
 
 export const addToSessionHistory = async (companionId: string) => {
-    const { userId } = await auth();
-    const supabase = createSupabaseClient();
-    const { data, error } = await supabase.from('session_history')
-        .insert({
-            companion_id: companionId,
-            user_id: userId,
-        })
+  const { userId } = await auth();
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase.from("session_history").insert({
+    companion_id: companionId,
+    user_id: userId,
+  });
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return data;
-}
+  return data;
+};
 
 export const getRecentSessions = async (limit = 10) => {
-    const supabase = createSupabaseClient();
-    const { data, error } = await supabase
-        .from('session_history')
-        .select(`companions:companion_id (*)`)
-        .order('created_at', { ascending: false })
-        .limit(limit)
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("session_history")
+    .select(`companions:companion_id (*)`)
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return data.map(({ companions }) => companions);
-}
+  return data.map(({ companions }) => companions);
+};
 
 export const getUserSessions = async (userId: string, limit = 10) => {
-    const supabase = createSupabaseClient();
-    const { data, error } = await supabase
-        .from('session_history')
-        .select(`companions:companion_id (*)`)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(limit)
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("session_history")
+    .select(`companions:companion_id (*)`)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return data.map(({ companions }) => companions);
-}
+  return data.map(({ companions }) => companions);
+};
 
 export const getUserCompanions = async (userId: string) => {
-    const supabase = createSupabaseClient();
-    const { data, error } = await supabase
-        .from('companions')
-        .select()
-        .eq('author', userId)
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("companions")
+    .select()
+    .eq("author", userId);
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    return data;
-}
+  return data;
+};
 
 export const newCompanionPermissions = async () => {
-    const { userId, has } = await auth();
-    const supabase = createSupabaseClient();
+  const { userId, has } = await auth();
+  const supabase = createSupabaseClient();
 
-    let limit = 0;
+  let limit = 0;
 
-    if(has({ plan: 'pro' })) {
-        return true;
-    } else if(has({ feature: "3_companion_limit" })) {
-        limit = 3;
-    } else if(has({ feature: "10_companion_limit" })) {
-        limit = 10;
-    }
+  if (has({ plan: "pro" })) {
+    return true;
+  } else if (has({ feature: "3_companion_limit" })) {
+    limit = 3;
+  } else if (has({ feature: "10_companion_limit" })) {
+    limit = 10;
+  }
 
-    const { data, error } = await supabase
-        .from('companions')
-        .select('id', { count: 'exact' })
-        .eq('author', userId)
+  const { data, error } = await supabase
+    .from("companions")
+    .select("id", { count: "exact" })
+    .eq("author", userId);
 
-    if(error) throw new Error(error.message);
+  if (error) throw new Error(error.message);
 
-    const companionCount = data?.length;
+  const companionCount = data?.length;
 
-    if(companionCount >= limit) {
-        return false
-    } else {
-        return true;
-    }
-}
+  if (companionCount >= limit) {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 // Bookmarks
 export const addBookmark = async (companionId: string, path: string) => {
@@ -536,16 +563,17 @@ export const getBookmarkedCompanions = async (userId: string) => {
 };
 
 export const getUserDetails = async () => {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
-    const user = await currentUser();
-    if (!user) redirect("/sign-in");
+  let userName = user.firstName;
+  if (!userName) {
+    userName = user.emailAddresses[0].emailAddress;
+  }
+  let userEmail = user.emailAddresses[0].emailAddress;
 
-    let userName = user.firstName;
-    if (!userName) {userName = user.emailAddresses[0].emailAddress;};
-    let userEmail = user.emailAddresses[0].emailAddress;
-    
-    return {
-        name: userName,
-        email: userEmail,
-    }
+  return {
+    name: userName,
+    email: userEmail,
+  };
 };
