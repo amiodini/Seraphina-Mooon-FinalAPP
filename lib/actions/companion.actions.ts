@@ -51,7 +51,7 @@ export const saveReading = async ({
   return data[0];
 };
 
-export const getReading = async (id: string) => {
+export const getReading = async (id: string) => { 
   const supabase = createSupabaseClient();
 
   const { data, error } = await supabase
@@ -570,7 +570,7 @@ export const getUserDetails = async () => {
   if (!userName) {
     userName = user.emailAddresses[0].emailAddress;
   }
-  let userEmail = user.emailAddresses[0].emailAddress;
+  const userEmail = user.emailAddresses[0].emailAddress;
 
   return {
     name: userName,

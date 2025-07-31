@@ -2,7 +2,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import path from "path";
 
 const navItems= [
                 {label: "The Deck", href: "/deck"}, 

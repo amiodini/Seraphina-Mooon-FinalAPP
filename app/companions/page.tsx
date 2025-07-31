@@ -1,5 +1,4 @@
 import CompanionCard from "@/components/CompanionCard";
-import CompanionsList from "@/components/CompanionsList"
 import SearchInput from "@/components/SearchInput";
 import SubjectFilter from "@/components/SubjectFilter";
 import { getAllCompanions } from "@/lib/actions/companion.actions";

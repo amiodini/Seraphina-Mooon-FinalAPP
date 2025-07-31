@@ -1,6 +1,5 @@
 import React from 'react'
 import Link from 'next/link';
-import { createServerSearchParamsForServerPage } from 'next/dist/server/request/search-params';
 
 interface CompanionCardProps {
     id: string;   // Unique identifier for the companion

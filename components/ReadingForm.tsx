@@ -111,7 +111,7 @@ const ReadingForm = () =>  {
                             <FormLabel>Name</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="Enter your name or the person's name if it's a gift"
+                                    placeholder="Enter your name or the person&quot;s name if it&quot;s a gift"
                                     {...field}
                                     className="input"
                                 />
@@ -185,7 +185,7 @@ const ReadingForm = () =>  {
                     name="giftEmail"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>If it's a gift, who do we have to send it to?</FormLabel>
+                            <FormLabel>If it&quot;s a gift, who do we have to send it to?</FormLabel>
                             <FormControl>
                             <Input
                                     type="text"
@@ -199,7 +199,7 @@ const ReadingForm = () =>  {
                     )}
                 />
                 <FormDescription>
-                    By clicking "Generate your Reading", you agree to our <a href="/terms-and-conditions" className="text-blue-500 underline" target="_blank">Terms and conditions</a>.  
+                    By clicking &quot;&quot;Generate your Reading&quot;&quot;, you agree to our <a href="/terms-and-conditions" className="text-blue-500 underline" target="_blank">Terms and conditions</a>.  
                 </FormDescription>
                 <Button type="submit" className="w-full cursor-pointer">Generate your Reading</Button>
             </form>

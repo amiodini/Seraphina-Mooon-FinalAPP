@@ -11,7 +11,7 @@ import {
 
     import Link from "next/link";
     import Image from "next/image";
-import { cn, getSubjectColor } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
  
   interface CardListProps {
