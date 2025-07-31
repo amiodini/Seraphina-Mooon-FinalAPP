@@ -1,8 +1,5 @@
-import CompanionCard from "@/components/CompanionCard";
-import CompanionsList from "@/components/CompanionsList";
 import CTA from "@/components/CTA";
 import ReadingIntro from "@/components/ReadingIntro";
-import {getSubjectColor} from "@/lib/utils";
 
 const Page = async () => {
 
