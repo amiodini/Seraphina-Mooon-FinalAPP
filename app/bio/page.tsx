@@ -5,7 +5,7 @@ const Bio = async () => {
     <main className="w-2/3 items-center justify-center">
       <article className="reading-section w-fit">
         <img
-          src="./images/seraphinamooncurly.jpg"
+          src="./images/SeraphinaMoonCurly.png"
           alt="Seraphina Moon"
           className="rounded-lg"
           width={300}
