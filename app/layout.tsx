@@ -53,6 +53,6 @@ const bricolage = Bricolage_Grotesque({
 
 export const metadata: Metadata = {
   title: "Seraphina Moon",
-  description: "Tee AI Tarot Reader",
+  description: "The AI Tarot Reader",
 };
 
