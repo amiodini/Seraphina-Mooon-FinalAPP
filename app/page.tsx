@@ -7,7 +7,7 @@ const Page = async () => {
     <main>
         <section className="home-section">
           <img
-              src="./images/seraphinamooncurly.jpg"
+              src="./images/SeraphinaMoon.png"
               alt="Seraphina Moon"
               className="rounded-lg"
               width={300}
