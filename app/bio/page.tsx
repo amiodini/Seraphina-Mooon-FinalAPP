@@ -1,11 +1,12 @@
 import React from "react";
+import Image from "next/image";
 
 const Bio = async () => {
   return (
     <main className="w-2/3 items-center justify-center">
       <article className="reading-section w-fit">
-        <img
-          src="./images/SeraphinaMoonCurly.png"
+        <Image
+          src="/images/SeraphinaMoonCurly.png"
           alt="Seraphina Moon"
           className="rounded-lg"
           width={300}

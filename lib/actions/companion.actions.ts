@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
 import { createSupabaseClient } from "@/lib/supabase";
-import { revalidatePath } from "next/cache";
 import { GoogleGenAI } from "@google/genai";
 import { Resend } from "resend";
 
