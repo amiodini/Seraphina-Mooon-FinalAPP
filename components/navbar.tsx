@@ -11,7 +11,7 @@ const Navbar = () => {
                 <img src="./images/logo.svg" 
                     alt="logo" width={46} height={44}
                 />
-                <p className="font-bold text-2xl">Seraphina Moon</p>
+                <p className="font-bold text-2xl max-sm:hidden">Seraphina Moon</p>
             </div>
         </Link>
         <div className="flex items-center gap-8">
