@@ -35,6 +35,15 @@ const Privacy = async () => {
           <li><b>Communication Data:</b> Any messages, questions, or correspondence you send to us</li>
         </ul>
         <br />
+        <p className="font-bold"> Google User Data</p>
+        <br />
+        When you sign in using Google authentication through Clerk, we access the following Google user data:
+        <br />
+        <ul>
+          <li>Basic Profile Information: Your name and email address</li>
+          <li>Authentication Token: To verify your identity and maintain your session</li>
+        </ul>
+
         <p className="font-bold"> Automatically Collected Information</p>
         <br />
         When you visit our Site, we may automatically collect certain information about your device and usage, including:
@@ -66,6 +75,18 @@ const Privacy = async () => {
           <li><b>Improvement:</b> To analyze usage patterns and improve our Site and services</li>
           <li><b>Legal Compliance:</b> To comply with applicable laws, regulations, and legal processes</li>
         </ul>
+        <br />
+        <p className="font-bold"> How We Use Google User Data</p>
+        <br />
+        Google user data (name and email address obtained through Google Sign-In) is used exclusively for:
+        <br />
+        <ul>
+          <li><b>Account Creation and Authentication:</b> To create and maintain your Seraphina Moon account</li>
+          <li><b>Service Personalization:</b> To address you by name in your tarot readings and communications</li>
+          <li><b>Email Delivery:</b> To send you your tarot readings and service-related notifications</li>
+        </ul>
+        <br />
+        We do not use Google user data for any other purposes, including advertising, analytics beyond our service operations, or any activities unrelated to providing our tarot reading services. Google user data is never sold or used for marketing purposes outside of our direct service to you.
         <p className="font-bold"> Third-Party Service Providers</p>
         <br />
         We work with trusted third-party service providers to operate our Site and deliver our services:
@@ -93,10 +114,48 @@ const Privacy = async () => {
         <br />
         We implement appropriate technical and organizational security measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
         <br />
+        <p className="font-bold"> Protection of Google User Data</p>
+        <br />
+        Google user data received through authentication is protected with the following measures:
+        <br />
+        <ul>
+          <li><b>Encryption in Transit:</b> All data transmitted between your browser and our servers uses industry-standard TLS/SSL encryption</li>
+          <li><b>Encryption at Rest:</b> User data stored in Supabase is encrypted at rest using AES-256 encryption</li>
+          <li><b>Access Controls:</b> Strict access controls ensure that only authorized personnel and systems can access user data</li>
+          <li><b>Secure Authentication:</b> Clerk's infrastructure provides enterprise-grade security for authentication data</li>
+          <li><b>Regular Security Audits:</b> Our service providers undergo regular security audits and maintain industry certifications</li>
+          <li><b>Minimal Data Collection:</b> We only collect and store the minimum Google user data necessary to provide our services</li>
+        </ul>
+        <br />
+        We comply with Google's API Services User Data Policy, including the Limited Use requirements, ensuring that Google user data is used only for providing and improving user-facing features that are prominent in our application's functionality.
+        <br />
         <p className="font-bold"> Data Retention</p>
         <br />
         We retain your personal information for as long as necessary to provide our services and fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law. When you delete your account, we will delete or anonymize your personal information, except where we are required to retain it for legal, regulatory, or security purposes.
         <br />
+        <p className="font-bold"> Retention of Google User Data</p>
+        <br />
+        Google user data is retained according to the following policy:
+        <br />
+        <ul>
+          <li><b>Active Accounts:</b> Your name and email obtained from Google are retained for as long as your account remains active</li>
+          <li><b>Account Deletion:</b> When you delete your account, your Google user data (name and email) is permanently deleted from our systems within 30 days</li>
+          <li><b>Legal Requirements:</b> We may retain certain data for longer periods if required by law, regulation, or to resolve disputes</li>
+        </ul>
+        <br />
+        <p className="font-bold"> User Data Deletion Process</p>
+        <br />
+        You have the right to request deletion of your data at any time. To delete your account and associated data:
+        <br />
+        <ul>
+          <li><b>Through Your Account:</b> Log into your account and navigate to account settings to delete your account</li>
+          <li><b>By Email Request:</b> Contact us at privacy@smoonai.top with your deletion request. We will process your request within 30 days</li>
+          <li><b>What Gets Deleted:</b> Upon account deletion, we will permanently delete your name, email, reading history, and all associated personal information</li>
+        </ul>
+        <br />
+        Exceptions: We may retain anonymized or aggregated data that cannot identify you, and data required for legal compliance, fraud prevention, or dispute resolution
+        <br />
+        After account deletion, you will no longer be able to access your previous readings or account information.        <br />
         <p className="font-bold"> Your Rights and Choices</p>
         <br />
         Depending on your location, you may have certain rights regarding your personal information, including:
@@ -124,7 +183,17 @@ const Privacy = async () => {
           <li><b>Business Transfers:</b> In connection with a merger, acquisition, or sale of assets (users will be notified)</li>
           <li><b>Protection of Rights:</b> To protect our rights, property, or safety, or that of our users or the public</li>
         </ul>
-
+        <br />
+        <p className="font-bold"> Sharing of Google User Data</p>
+        <br />
+        Google user data is shared only with the following third parties and only for the purposes described:
+        <br />
+        <ul>
+          <li><b>Clerk (Authentication Provider):</b> Your Google email and name are shared with Clerk to facilitate secure authentication and account management. Clerk acts as our authentication service provider.</li>
+          <li><b>Supabase (Database Provider):</b> Your name and email obtained from Google are stored in Supabase's secure database infrastructure to maintain your account and deliver services.</li>
+        </ul>
+        <br />
+        We do not share Google user data with any other third parties except as required by law or with your explicit consent. Google user data is never sold, used for advertising purposes, or shared with data brokers or marketing platforms.
         <br />
         <p className="font-bold"> Children's Privacy</p>
         <br />
