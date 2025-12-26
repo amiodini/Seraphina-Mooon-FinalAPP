@@ -22,20 +22,40 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-import {Textarea} from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 import { createTarotReading, getUserDetails, sendGiftEmail, newReadingPermissions } from '@/lib/actions/companion.actions';
+import { useState } from "react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 
 const formSchema = z.object({
-    name: z.string().min(1, { message: 'Name is required.'}),
-    age: z.string().min(2, { message: 'Minimum age is 18.'}),
-    status: z.string().min(1, { message: 'What do you want to ask Seraphina?'}),
+    name: z.string().min(1, { message: 'Name is required.' }),
+    age: z.string().min(2, { message: 'Minimum age is 18.' }),
+    status: z.string().min(1, { message: 'What do you want to ask Seraphina?' }),
     isGift: z.string(),
     giftEmail: z.string().email("Please enter a valid email address").optional(),
 })
 
-const ReadingForm = () =>  {
+const ReadingForm = () => {
+
+    const [modalState, setModalState] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        isError: boolean;
+    }>({
+        isOpen: false,
+        title: "",
+        message: "",
+        isError: false,
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -51,53 +71,84 @@ const ReadingForm = () =>  {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
         const userDetails = await getUserDetails();
-            if (!userDetails) {
-                redirect("/sign-in");
-            }
+        if (!userDetails) {
+            redirect("/sign-in");
+        }
 
-            const userName = userDetails.name;
-            const userEmail = userDetails.email;
+        const userName = userDetails.name;
+        const userEmail = userDetails.email;
 
         if (values.isGift === 'YES' && !values.giftEmail) {
-            document.getElementById('errorLabel')!.innerText = "Please provide an email address for the gift recipient.";
+            setModalState({
+                isOpen: true,
+                title: "Validation Error",
+                message: "Please provide an email address for the gift recipient.",
+                isError: true
+            });
             return;
         } else if (values.isGift === 'YES' && values.giftEmail?.trim().toLowerCase() === userEmail.trim().toLowerCase()) {
-            document.getElementById('errorLabel')!.innerText = "You cannot send a gift to yourself.";
+            setModalState({
+                isOpen: true,
+                title: "Invalid Input",
+                message: "You cannot send a gift to yourself.",
+                isError: true
+            });
             return;
-        }  else {
-            document.getElementById('errorLabel')!.innerText = "";
         }
-    
+
         const tarotReading = await createTarotReading(values.name, values.age, values.status, values.isGift === 'YES', values.giftEmail);
 
         if (!tarotReading) {
-            document.getElementById('errorLabel')!.innerText = "Seraphina cannot read your Tarots at the moment. Please try again.";
-            return;
-        }
-        
-        if(!newReadingPermissions(userEmail, values.isGift === 'YES'))
-        {
-            if(values.isGift === 'YES')
-            {
-                document.getElementById('errorLabel')!.innerText = "You have exceeded the number of allowed gifts";
-                return;
-            }
-            document.getElementById('errorLabel')!.innerText = "Sorry, you have exceeded the number of possible readings for the month. Why not upgrade to get more?.";
+            setModalState({
+                isOpen: true,
+                title: "Service Error",
+                message: "Seraphina cannot read your Tarots at the moment. Please try again.",
+                isError: true
+            });
             return;
         }
 
-        if(values.isGift === 'YES') {
+        if (!newReadingPermissions(userEmail, values.isGift === 'YES')) {
+            if (values.isGift === 'YES') {
+                setModalState({
+                    isOpen: true,
+                    title: "Limit Reached",
+                    message: "You have exceeded the number of allowed gifts",
+                    isError: true
+                });
+                return;
+            }
+            setModalState({
+                isOpen: true,
+                title: "Limit Reached",
+                message: "Sorry, you have exceeded the number of possible readings for the month. Why not upgrade to get more?.",
+                isError: true
+            });
+            return;
+        }
+
+        if (values.isGift === 'YES') {
             const sentMail = await sendGiftEmail(userName, values.name, tarotReading.id, values.giftEmail?.trim().toLowerCase() || "");
             if (!sentMail) {
-                document.getElementById('errorLabel')!.innerText = "Failed to send gift reading. Please try again.";    
+                setModalState({
+                    isOpen: true,
+                    title: "Email Error",
+                    message: "Failed to send gift reading. Please try again.",
+                    isError: true
+                });
             } else {
-                document.getElementById('errorLabel')!.innerText = "Seraphina has sent your gift reading to " + values.name + "!";
+                setModalState({
+                    isOpen: true,
+                    title: "Gift Sent!",
+                    message: "Seraphina has sent your gift reading to " + values.name + "!",
+                    isError: false
+                });
             }
         }
         else {
             redirect(`/readings/${tarotReading.id}`);
         }
-    
+
     }
 
     return (
@@ -127,7 +178,7 @@ const ReadingForm = () =>  {
                         <FormItem>
                             <FormLabel>What is your age?</FormLabel>
                             <FormControl>
-                            <Input
+                                <Input
                                     type="number"
                                     placeholder="48"
                                     {...field}
@@ -145,7 +196,7 @@ const ReadingForm = () =>  {
                         <FormItem>
                             <FormLabel>What do you want the cards to tell you?</FormLabel>
                             <FormControl>
-                            <Textarea
+                                <Textarea
                                     placeholder="Remember: the cards do not predict the future"
                                     {...field}
                                     className="input"
@@ -187,7 +238,7 @@ const ReadingForm = () =>  {
                         <FormItem>
                             <FormLabel>If it&quot;s a gift, who do we have to send it to?</FormLabel>
                             <FormControl>
-                            <Input
+                                <Input
                                     type="text"
                                     placeholder="Ex. my.friend@mail.com"
                                     {...field}
@@ -199,11 +250,23 @@ const ReadingForm = () =>  {
                     )}
                 />
                 <FormDescription>
-                    By clicking &quot;&quot;Generate your Reading&quot;&quot;, you agree to our <a href="/terms-and-conditions" className="text-blue-500 underline" target="_blank">Terms and conditions</a>.  
+                    By clicking &quot;&quot;Generate your Reading&quot;&quot;, you agree to our <a href="/terms-and-conditions" className="text-blue-500 underline" target="_blank">Terms and conditions</a>.
                 </FormDescription>
                 <Button type="submit" className="w-full cursor-pointer">Generate your Reading</Button>
             </form>
-            <label id="errorLabel" className="text-2xl text-red-600 font-bold" ></label>
+
+            <Dialog open={modalState.isOpen} onOpenChange={(open) => setModalState(prev => ({ ...prev, isOpen: open }))}>
+                <DialogContent className="sm:max-w-[425px] bg-[#1a1b26] border-gray-700 text-white">
+                    <DialogHeader>
+                        <DialogTitle className={modalState.isError ? "text-red-500" : "text-green-500"}>
+                            {modalState.title}
+                        </DialogTitle>
+                        <DialogDescription className="text-gray-300">
+                            {modalState.message}
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </Form>
     )
 };
